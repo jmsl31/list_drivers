@@ -30,62 +30,69 @@ public class ListingMethodes {
 
     public ListingMethodes() throws JSONException {
 
-        driver = new JSONObject();
-
     }
 
     JSONObject readDelphi(BufferedReader buff) throws IOException, JSONException {
         String ligne, nommethode = null;
         int compt = 0;
         JSONObject nom = new JSONObject();
-        methodes = new JSONArray();
         while ((ligne = buff.readLine()) != null) {
-            
+
             if (ligne.contains("unit")) {
-                nommethode = ligne.substring(5, ligne.length()-1);
+                nommethode = ligne.substring(5, ligne.length() - 1);
             }
-            
+
             if (ligne.contains("procedure")) {
                 compt++;
-                String s = ligne.substring(ligne.lastIndexOf("procedure "), ligne.length() - 1);
-                nom.put("methodes"+compt, s);
-                
+                String s = ligne;
+                nom.put("methodes" + compt, s);
+
             }
 
         }
-        driver.put(nommethode, nom);
-        return (driver);
+
+        return (nom);
     }
 
     JSONObject readCPLUS(BufferedReader buff) throws IOException, JSONException {
         String ligne, nommethode = null;
         int compt = 0;
-       
+        int i =0;
         JSONObject nom = new JSONObject();
-        methodes = new JSONArray();
         while ((ligne = buff.readLine()) != null) {
-            
-            System.out.println("Ligne :" +compt);
+            i++;   
             if (!ligne.isEmpty()) {
-                
-                if (ligne.contains("class")) {
-                    if (ligne.contains("/*")) {
 
-                    } else {
-                        nommethode = ligne.substring(5, ligne.indexOf(":"));
+                if (ligne.contains("class")) {
+                    if (ligne.contains("/*") || ligne.contains("* \\class")|| ligne.contains("_class")|| ligne.contains("* class")
+                       || ligne.contains("! \\class")|| ligne.contains("* \\brief class")|| ligne.contains("classe")|| ligne.contains("The class")|| ligne.contains("Ivi_Class"))
+                    {
+                    }
+                    else {
+                        try {
+                            nommethode = ligne.substring(5, ligne.indexOf(":"));
+                        } catch (Exception e) {
+                            try {
+                                nommethode = ligne.substring(5, ligne.indexOf("{"));
+                            } catch (Exception ex) {
+                                 System.out.println(i);
+                            }
+                            
+                           
+                        }
+                        
                     }
                 }
 
                 if (ligne.contains("virtual ")) {
                     compt++;
-                    String s = ligne.substring(ligne.lastIndexOf("virtual "), ligne.length() - 1);
-                    nom.put("methodes"+ compt, s);
-                   
+                    String s = ligne;
+                    nom.put("methodes" + compt, s);
+
                 }
             }
         }
-        driver.put(nommethode, nom);
-        return (driver);
+        return (nom);
     }
 
 }
