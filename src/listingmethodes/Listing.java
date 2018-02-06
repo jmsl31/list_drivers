@@ -36,83 +36,8 @@ public class Listing extends javax.swing.JPanel {
     /**
      * Creates new form Listing
      */
-    ListingMethodes driver;
-    JSONArray listDriver;
-    JSONObject drivername;
-    JSONObject drivertype;
-    File chemin;
-    FileWriter cheminwriter;
-
     public Listing(ListingMethodes l) throws IOException {
         initComponents();
-        driver = l;
-        listDriver = new JSONArray();
-        drivertype = new JSONObject();
-
-        drivername = new JSONObject();
-        JFrame fenetre = new JFrame();
-
-        fenetre.add(this);
-        fenetre.setSize(800, 800);
-        fenetre.setVisible(true);
-        cheminwriter = new FileWriter("D://liste_driver.json");
-
-    }
-
-    void writefile() throws IOException {
-
-        drivername.writeJSONString(cheminwriter);
-        cheminwriter.close();
-    }
-
-    private void displayPAS(String s) throws IOException, JSONException {
-
-        String[] listefichiers;
-        chemin = new File(s);
-        int i;
-        JSONObject temp = new JSONObject();
-        listefichiers = chemin.list();
-        for (i = 0; i < listefichiers.length; i++) {
-            if (listefichiers[i].endsWith(".pas") == true) {
-
-                jComboBox2.addItem(listefichiers[i]);
-                File f = new File(chemin + "\\" + listefichiers[i]);
-                BufferedReader reader = new BufferedReader(new FileReader(f));
-                temp = driver.readDelphi(reader);
-
-            }
-
-        }
-        drivertype.put("Delphi", temp);
-
-    }
-
-    private void displayH(String s) throws FileNotFoundException, IOException, JSONException {
-        String[] listefichiers;
-        chemin = new File(s);
-        int i = 0;
-        int compt = 0;
-        listefichiers = chemin.list();
-        JSONObject t = new JSONObject();
-        for (i = 0; i < listefichiers.length; i++) {
-            if (listefichiers[i].endsWith(".h") == true) {
-                compt++;
-                System.out.println("Fichier : " + compt);
-                System.out.println("i : " + i);
-                if (i == 15) {
-                    int toto = 0;
-                }
-
-                jComboBox2.addItem(listefichiers[i]);
-                File f = new File(chemin + "\\" + listefichiers[i]);
-                BufferedReader reader = new BufferedReader(new FileReader(f));
-                t = driver.readCPLUS(reader);
-                ;
-            }
-
-        }
-        drivertype.put("CPlus", t);
-
     }
 
     /**
@@ -209,47 +134,15 @@ public class Listing extends javax.swing.JPanel {
     public static void main(String[] args) throws JSONException, IOException {
         // TODO code application logic here
         ListingMethodes file = new ListingMethodes();
-        File[] listefichiers;
-        Listing project = new Listing(file);
 
-        try {
+      
             // TODO add your handling code here:    
             //   project.displayPAS("D:\\delphi\\vbench\\Drivers\\PowerMeters");
             //   project.displayH("D:\\cpp\\drivers_cpp\\src\\instruments\\powermeters");
-            File liste = new File("D:\\delphi\\vbench\\Drivers\\");
-            listefichiers = liste.listFiles();
-            
-            /*      for (int i = 0; i < liste.length(); i++) {
-                
-                 if (liste.isDirectory())
-                 {
-                     project.jComboBox1.addItem(listefichiers[i].getAbsolutePath());
-                     
-                     for (int j = 0; j < listefichiers[i].listFiles().length; j++) {
-                         project.jComboBox2.addItem(listefichiers[i].listFiles()[j].getName());
-                     }
-                     
-                 }
-            }
-             */
-            project.displayPAS("D:\\delphi\\vbench\\Drivers\\PowerMeters");
-            project.displayH("D:\\cpp\\drivers_cpp\\src\\instruments\\powermeters");
-
-            project.drivername.put("powermeters", project.drivertype);
-
-            project.writefile();
-
-        } catch (IOException ex) {
-            Logger.getLogger(Listing.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (JSONException ex) {
-            Logger.getLogger(Listing.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            project.cheminwriter.close();
-        } catch (IOException ex) {
-            Logger.getLogger(Listing.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+            FileWriter Lising_driver = new FileWriter("d:/listing_driver.json");
+            DiskFileExplorer disk = new DiskFileExplorer("D:\\Drivers\\", Boolean.TRUE, file, Lising_driver);
+            disk.list();
+     
     }
-}
+    
+    
